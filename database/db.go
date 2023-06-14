@@ -11,13 +11,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewDB() *gorm.DB {
+func NewDB(dbName string) *gorm.DB {
 	dbHost := os.Getenv("DB_HOST")
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbPort := os.Getenv("DB_PORT")
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=gorl_db port=%s sslmode=disable", dbHost, dbUser, dbPassword, dbPort)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", dbHost, dbUser, dbPassword, dbName, dbPort)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	helpers.PanicIfError(err)
 
