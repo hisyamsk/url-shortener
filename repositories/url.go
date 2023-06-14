@@ -10,8 +10,8 @@ type UrlRepository interface {
 	FindAll() []*entities.Url
 	FindById(id int) (*entities.Url, error)
 	FindByUrl(value string) (*entities.Url, error)
-	Create(url *entities.Url) *entities.Url
-	Update(url *entities.Url) *entities.Url
+	Create(url *entities.Url)
+	Update(url *entities.Url)
 	Delete(id int)
 }
 
@@ -25,7 +25,7 @@ func NewUrlRepository(db *gorm.DB) UrlRepository {
 
 func (repository *urlRepository) FindAll() []*entities.Url {
 	var urls []*entities.Url
-	err := repository.DB.Create(urls).Error
+	err := repository.DB.Find(&urls).Error
 	helpers.PanicIfError(err)
 
 	return urls
@@ -33,33 +33,26 @@ func (repository *urlRepository) FindAll() []*entities.Url {
 
 func (repository *urlRepository) FindById(id int) (*entities.Url, error) {
 	var url *entities.Url
-	err := repository.DB.Find(&url, id).Error
-	if err != nil {
-		return nil, err
-	}
+	err := repository.DB.First(&url, id).Error
 
-	return url, nil
+	return url, err
 }
 
 func (repository *urlRepository) FindByUrl(value string) (*entities.Url, error) {
 	var url *entities.Url
 	err := repository.DB.Where("url = ?", value).First(&url).Error
-	helpers.PanicIfError(err)
 
-	return url, nil
+	return url, err
 }
 
-func (repository *urlRepository) Create(url *entities.Url) *entities.Url {
+func (repository *urlRepository) Create(url *entities.Url) {
 	err := repository.DB.Create(&url).Error
 	helpers.PanicIfError(err)
-	return url
 }
 
-func (repository *urlRepository) Update(url *entities.Url) *entities.Url {
+func (repository *urlRepository) Update(url *entities.Url) {
 	err := repository.DB.Save(&url).Error
 	helpers.PanicIfError(err)
-
-	return url
 }
 
 func (repository *urlRepository) Delete(id int) {

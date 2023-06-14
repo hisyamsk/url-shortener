@@ -12,10 +12,12 @@ var DB *gorm.DB
 var Users []*entities.User
 var Urls []*entities.Url
 var UserRepo repositories.UserRepository
+var UrlRepo repositories.UrlRepository
 
 func TestInit() {
 	DB = database.NewDB(database.DBTestName)
 	UserRepo = repositories.NewUserRepository(DB)
+	UrlRepo = repositories.NewUrlRepository(DB)
 }
 
 func PopulateTables() {
