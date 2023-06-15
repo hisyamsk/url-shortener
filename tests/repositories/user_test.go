@@ -45,7 +45,7 @@ func TestUserRepoFindById(t *testing.T) {
 func TestUserRepoFindByUsername(t *testing.T) {
 	tests.PopulateTables()
 	defer tests.DeleteRecords()
-	username := "hisyamsss"
+	username := "hisyam"
 
 	result, err := tests.UserRepo.Find("username", username)
 	expected := tests.Users[0]

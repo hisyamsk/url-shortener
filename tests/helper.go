@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"github.com/hisyamsk/url-shortener/config"
 	"github.com/hisyamsk/url-shortener/database"
 	"github.com/hisyamsk/url-shortener/entities"
 	"github.com/hisyamsk/url-shortener/helpers"
@@ -19,6 +20,7 @@ var UrlRepo repositories.UrlRepository
 var UserService services.UserService
 
 func TestInit() {
+	config.Init()
 	DB = database.NewDB(database.DBTestName)
 	UserRepo = repositories.NewUserRepository(DB)
 	UrlRepo = repositories.NewUrlRepository(DB)
