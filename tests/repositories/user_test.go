@@ -87,7 +87,7 @@ func TestUserRepoUpdate(t *testing.T) {
 	result.Username = "updated_hisyam"
 
 	tests.UserRepo.Update(result)
-	expected := &entities.User{ID: 1, Username: "updated_hisyam", Password: "password1"}
+	expected := &entities.User{ID: 1, Username: "updated_hisyam", Password: tests.Users[0].Password}
 
 	assert.Equal(t, expected, result)
 }
@@ -101,4 +101,16 @@ func TestUserRepoDelete(t *testing.T) {
 	_, err := tests.UserRepo.Find("id", id)
 
 	assert.NotNil(t, err)
+}
+
+func TestUserRepoDeleteUrlsById(t *testing.T) {
+	tests.PopulateTables()
+	defer tests.DeleteRecords()
+	id := 1
+
+	tests.UserRepo.DeleteUrlsById(id)
+	result := tests.UserRepo.FindUrlsById(id)
+	expected := []*entities.Url{}
+
+	assert.Equal(t, expected, result)
 }

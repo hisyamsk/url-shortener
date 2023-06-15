@@ -15,6 +15,7 @@ type UserRepository interface {
 	Create(user *entities.User)
 	Update(user *entities.User)
 	Delete(id int)
+	DeleteUrlsById(id int)
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
@@ -32,6 +33,7 @@ func (repository *userRepository) FindAll() []*entities.User {
 
 	return users
 }
+
 func (repository *userRepository) Find(field string, val any) (*entities.User, error) {
 	var user *entities.User
 	query := fmt.Sprintf("%s = ?", field)
@@ -39,6 +41,7 @@ func (repository *userRepository) Find(field string, val any) (*entities.User, e
 
 	return user, err
 }
+
 func (repository *userRepository) FindUrlsById(id int) []*entities.Url {
 	var urls []*entities.Url
 	err := repository.DB.Where("user_id = ?", id).Find(&urls).Error
@@ -46,15 +49,23 @@ func (repository *userRepository) FindUrlsById(id int) []*entities.Url {
 
 	return urls
 }
+
 func (repository *userRepository) Create(user *entities.User) {
 	err := repository.DB.Create(&user).Error
 	helpers.PanicIfError(err)
 }
+
 func (repository *userRepository) Update(user *entities.User) {
-	err := repository.DB.Debug().Model(&entities.User{ID: user.ID}).Updates(&user).Error
+	err := repository.DB.Model(&entities.User{ID: user.ID}).Updates(&user).Error
 	helpers.PanicIfError(err)
 }
+
 func (repository *userRepository) Delete(id int) {
 	err := repository.DB.Delete(&entities.User{}, id).Error
+	helpers.PanicIfError(err)
+}
+
+func (repository *userRepository) DeleteUrlsById(id int) {
+	err := repository.DB.Where("user_id = ?", id).Delete(&entities.Url{}).Error
 	helpers.PanicIfError(err)
 }
