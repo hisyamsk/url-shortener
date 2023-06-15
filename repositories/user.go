@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	FindAll() []*entities.User
 	FindById(id int) (*entities.User, error)
+	FindUrlsById(id int) []*entities.Url
 	Create(user *entities.User)
 	Update(user *entities.User)
 	Delete(id int)
@@ -34,6 +35,13 @@ func (repository *userRepository) FindById(id int) (*entities.User, error) {
 	err := repository.DB.First(&user, id).Error
 
 	return user, err
+}
+func (repository *userRepository) FindUrlsById(id int) []*entities.Url {
+	var urls []*entities.Url
+	err := repository.DB.Where("user_id = ?", id).Find(&urls).Error
+	helpers.PanicIfError(err)
+
+	return urls
 }
 func (repository *userRepository) Create(user *entities.User) {
 	err := repository.DB.Create(&user).Error

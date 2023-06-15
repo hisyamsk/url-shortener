@@ -52,6 +52,22 @@ func TestUserRepoFindAll(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
+func TestUserRepoFindUrlsById(t *testing.T) {
+	tests.PopulateTables()
+	defer tests.DeleteRecords()
+	id := 1
+
+	result := tests.UserRepo.FindUrlsById(id)
+	var expected []*entities.Url
+	for _, url := range tests.Urls {
+		if url.UserID == uint(id) {
+			expected = append(expected, url)
+		}
+	}
+
+	assert.Equal(t, expected, result)
+}
+
 func TestUserRepoUpdate(t *testing.T) {
 	tests.PopulateTables()
 	defer tests.DeleteRecords()
