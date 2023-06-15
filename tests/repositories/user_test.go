@@ -35,7 +35,19 @@ func TestUserRepoFindById(t *testing.T) {
 	defer tests.DeleteRecords()
 	id := 1
 
-	result, err := tests.UserRepo.FindById(id)
+	result, err := tests.UserRepo.Find("id", id)
+	expected := tests.Users[0]
+
+	assert.Equal(t, expected, result)
+	assert.Nil(t, err)
+}
+
+func TestUserRepoFindByUsername(t *testing.T) {
+	tests.PopulateTables()
+	defer tests.DeleteRecords()
+	username := "hisyamsss"
+
+	result, err := tests.UserRepo.Find("username", username)
 	expected := tests.Users[0]
 
 	assert.Equal(t, expected, result)
@@ -86,7 +98,7 @@ func TestUserRepoDelete(t *testing.T) {
 	id := 1
 
 	tests.UserRepo.Delete(id)
-	_, err := tests.UserRepo.FindById(id)
+	_, err := tests.UserRepo.Find("id", id)
 
 	assert.NotNil(t, err)
 }

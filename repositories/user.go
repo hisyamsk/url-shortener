@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"github.com/hisyamsk/url-shortener/entities"
 	"github.com/hisyamsk/url-shortener/helpers"
 	"gorm.io/gorm"
@@ -8,7 +10,7 @@ import (
 
 type UserRepository interface {
 	FindAll() []*entities.User
-	FindById(id int) (*entities.User, error)
+	Find(field string, val any) (*entities.User, error)
 	FindUrlsById(id int) []*entities.Url
 	Create(user *entities.User)
 	Update(user *entities.User)
@@ -30,9 +32,10 @@ func (repository *userRepository) FindAll() []*entities.User {
 
 	return users
 }
-func (repository *userRepository) FindById(id int) (*entities.User, error) {
+func (repository *userRepository) Find(field string, val any) (*entities.User, error) {
 	var user *entities.User
-	err := repository.DB.First(&user, id).Error
+	query := fmt.Sprintf("%s = ?", field)
+	err := repository.DB.Where(query, val).First(&user).Error
 
 	return user, err
 }

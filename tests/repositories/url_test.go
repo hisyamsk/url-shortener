@@ -24,7 +24,7 @@ func TestUrlRepoFindById(t *testing.T) {
 	defer tests.DeleteRecords()
 	id := 1
 
-	result, err := tests.UrlRepo.FindById(id)
+	result, err := tests.UrlRepo.Find("id", id)
 	expected := tests.Urls[0]
 
 	assert.Equal(t, expected, result)
@@ -36,7 +36,7 @@ func TestUrlRepoFindByUrl(t *testing.T) {
 	defer tests.DeleteRecords()
 	url := "url1"
 
-	result, err := tests.UrlRepo.FindByUrl(url)
+	result, err := tests.UrlRepo.Find("url", url)
 	expected := tests.Urls[0]
 
 	assert.Equal(t, expected, result)
@@ -71,7 +71,7 @@ func TestUrlRepoDelete(t *testing.T) {
 	id := 1
 
 	tests.UrlRepo.Delete(id)
-	_, err := tests.UrlRepo.FindById(id)
+	_, err := tests.UrlRepo.Find("id", id)
 
 	assert.NotNil(t, err)
 }
