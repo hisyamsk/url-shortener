@@ -51,7 +51,7 @@ func (repository *userRepository) Create(user *entities.User) {
 	helpers.PanicIfError(err)
 }
 func (repository *userRepository) Update(user *entities.User) {
-	err := repository.DB.Save(&user).Error
+	err := repository.DB.Debug().Model(&entities.User{ID: user.ID}).Updates(&user).Error
 	helpers.PanicIfError(err)
 }
 func (repository *userRepository) Delete(id int) {

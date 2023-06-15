@@ -53,7 +53,7 @@ func (repository *urlRepository) Create(url *entities.Url) {
 }
 
 func (repository *urlRepository) Update(url *entities.Url) {
-	err := repository.DB.Save(&url).Error
+	err := repository.DB.Model(&entities.Url{ID: url.ID}).Updates(&url).Error
 	helpers.PanicIfError(err)
 }
 
