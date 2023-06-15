@@ -5,26 +5,32 @@ import (
 	"github.com/hisyamsk/url-shortener/entities"
 	"github.com/hisyamsk/url-shortener/helpers"
 	"github.com/hisyamsk/url-shortener/repositories"
+	"github.com/hisyamsk/url-shortener/services"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 var Users []*entities.User
 var Urls []*entities.Url
+
 var UserRepo repositories.UserRepository
 var UrlRepo repositories.UrlRepository
+
+var UserService services.UserService
 
 func TestInit() {
 	DB = database.NewDB(database.DBTestName)
 	UserRepo = repositories.NewUserRepository(DB)
 	UrlRepo = repositories.NewUrlRepository(DB)
+	UserService = services.NewUserService(UserRepo)
 }
 
 func PopulateTables() {
+	pw := helpers.HashPassword("password123")
 	Users = []*entities.User{
-		{Username: "hisyam", Password: "password1"},
-		{Username: "setiadi", Password: "password2"},
-		{Username: "kurniawan", Password: "password3"},
+		{Username: "hisyam", Password: pw},
+		{Username: "setiadi", Password: pw},
+		{Username: "kurniawan", Password: pw},
 	}
 	err := DB.Create(&Users).Error
 	helpers.PanicIfError(err)
