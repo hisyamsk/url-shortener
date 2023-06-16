@@ -18,6 +18,7 @@ var UserRepo repositories.UserRepository
 var UrlRepo repositories.UrlRepository
 
 var UserService services.UserService
+var UrlService services.UrlService
 
 func TestInit() {
 	config.Init()
@@ -25,6 +26,7 @@ func TestInit() {
 	UserRepo = repositories.NewUserRepository(DB)
 	UrlRepo = repositories.NewUrlRepository(DB)
 	UserService = services.NewUserService(UserRepo)
+	UrlService = services.NewUrlService(UrlRepo, UserRepo)
 }
 
 func PopulateTables() {
