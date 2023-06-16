@@ -41,8 +41,7 @@ func (service *userService) Find(field string, val any) *models.UserResponse {
 		panic(fiber.NewError(fiber.StatusNotFound, err.Error()))
 	}
 
-	userResponse := helpers.UserEntityToResponse(userEntity)
-	return userResponse
+	return helpers.UserEntityToResponse(userEntity)
 }
 func (service *userService) FindUrlsById(id int) []*models.UrlModel {
 	_, err := service.repository.Find("id", id)
@@ -65,9 +64,7 @@ func (service *userService) Create(user *models.UserModel) *models.UserResponse 
 		userEntity := &entities.User{Username: user.Username, Password: hashedPassword}
 
 		service.repository.Create(userEntity)
-		userResponse := helpers.UserEntityToResponse(userEntity)
-
-		return userResponse
+		return helpers.UserEntityToResponse(userEntity)
 	}
 
 	panic(fiber.NewError(fiber.StatusNotFound, err.Error()))
@@ -94,9 +91,7 @@ func (service *userService) Update(user *models.UserModel) *models.UserResponse 
 	userEntity.ID = user.ID
 
 	service.repository.Update(userEntity)
-	userResponse := helpers.UserEntityToResponse(userEntity)
-
-	return userResponse
+	return helpers.UserEntityToResponse(userEntity)
 }
 func (service *userService) Delete(id int) {
 	_, err := service.repository.Find("id", id)
