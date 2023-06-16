@@ -45,7 +45,18 @@ func (service *userService) Find(field string, val any) *models.UserResponse {
 	return userResponse
 }
 func (service *userService) FindUrlsById(id int) []*models.UrlModel {
-	panic("not implement") // TODO: Implement
+	_, err := service.repository.Find("id", id)
+	if err != nil {
+		panic(fiber.NewError(fiber.StatusNotFound, err.Error()))
+	}
+
+	urls := service.repository.FindUrlsById(id)
+	var urlsResponse []*models.UrlModel
+	for _, url := range urls {
+		urlsResponse = append(urlsResponse, helpers.UrlEntityToResponse(url))
+	}
+
+	return urlsResponse
 }
 func (service *userService) Create(user *models.UserModel) *models.UserResponse {
 	_, err := service.repository.Find("username", user.Username)

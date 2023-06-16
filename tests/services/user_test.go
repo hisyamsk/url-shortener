@@ -65,6 +65,22 @@ func TestUserServiceFindAll(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
+func TestUserServiceFindUrlsById(t *testing.T) {
+	tests.PopulateTables()
+	defer tests.DeleteRecords()
+	userId := 1
+	var expected []*models.UrlModel
+
+	result := tests.UserService.FindUrlsById(userId)
+	for _, val := range tests.Urls {
+		if val.UserID == uint(userId) {
+			expected = append(expected, helpers.UrlEntityToResponse(val))
+		}
+	}
+
+	assert.Equal(t, expected, result)
+}
+
 func TestUserServiceUpdate(t *testing.T) {
 	tests.PopulateTables()
 	defer tests.DeleteRecords()

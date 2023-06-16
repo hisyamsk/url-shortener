@@ -11,3 +11,12 @@ func UserEntityToResponse(entity *entities.User) *models.UserResponse {
 		Username: entity.Username,
 	}
 }
+
+func UrlEntityToResponse(entity *entities.Url) *models.UrlModel {
+	return &models.UrlModel{
+		ID:       entity.ID,
+		Url:      entity.Url,
+		Redirect: entity.Redirect,
+		UserID:   entity.UserID,
+	}
+}
