@@ -67,7 +67,7 @@ func (service *userService) Create(user *models.UserModel) *models.UserResponse 
 		return helpers.UserEntityToResponse(userEntity)
 	}
 
-	panic(fiber.NewError(fiber.StatusNotFound, err.Error()))
+	panic(fiber.NewError(fiber.StatusBadRequest, "username already exists"))
 }
 func (service *userService) Update(user *models.UserModel) *models.UserResponse {
 	// check if user exists
@@ -76,13 +76,15 @@ func (service *userService) Update(user *models.UserModel) *models.UserResponse 
 		panic(fiber.NewError(fiber.StatusNotFound, err.Error()))
 	}
 
-	// check if username already exists
-	_, err = service.repository.Find("username", user.Username)
-	if err == nil {
-		panic(fiber.NewError(fiber.StatusBadRequest, "username already exists"))
+	// check if user updates the username
+	if user.Username != "" {
+		_, err = service.repository.Find("username", user.Username)
+		if err == nil {
+			panic(fiber.NewError(fiber.StatusBadRequest, "username already exists"))
+		}
+		foundUser.Username = user.Username
 	}
 
-	userEntity := &entities.User{ID: user.ID, Username: user.Username, Password: user.Password}
 	// check if user updates the password
 	if user.Password != "" {
 		err := helpers.ComparePassword(foundUser.Password, user.Password)
@@ -90,11 +92,11 @@ func (service *userService) Update(user *models.UserModel) *models.UserResponse 
 			panic(fiber.NewError(fiber.StatusBadRequest, "new password cannot be the same as the old one"))
 		}
 		hashedPassword := helpers.HashPassword(user.Password)
-		userEntity.Password = hashedPassword
+		foundUser.Password = hashedPassword
 	}
 
-	service.repository.Update(userEntity)
-	return helpers.UserEntityToResponse(userEntity)
+	service.repository.Update(foundUser)
+	return helpers.UserEntityToResponse(foundUser)
 }
 func (service *userService) Delete(id int) {
 	_, err := service.repository.Find("id", id)
