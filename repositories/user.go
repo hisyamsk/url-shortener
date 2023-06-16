@@ -6,6 +6,7 @@ import (
 	"github.com/hisyamsk/url-shortener/entities"
 	"github.com/hisyamsk/url-shortener/helpers"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type UserRepository interface {
@@ -56,7 +57,7 @@ func (repository *userRepository) Create(user *entities.User) {
 }
 
 func (repository *userRepository) Update(user *entities.User) {
-	err := repository.DB.Model(&entities.User{ID: user.ID}).Updates(&user).Error
+	err := repository.DB.Model(&user).Clauses(clause.Returning{}).Updates(&user).Error
 	helpers.PanicIfError(err)
 }
 
