@@ -77,7 +77,7 @@ func (service *userService) Update(user *models.UserModel) *models.UserResponse 
 	}
 
 	// check if user updates the username
-	if user.Username != "" {
+	if user.Username != "" && user.Username != foundUser.Username {
 		_, err = service.repository.Find("username", user.Username)
 		if err == nil {
 			panic(fiber.NewError(fiber.StatusBadRequest, "username already exists"))

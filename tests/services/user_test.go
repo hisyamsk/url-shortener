@@ -133,7 +133,7 @@ func TestUserServiceUpdate(t *testing.T) {
 func TestUserServiceUpdateFailedUsername(t *testing.T) {
 	tests.PopulateTables()
 	defer tests.DeleteRecords()
-	user := &models.UserModel{ID: 1, Username: "hisyam", Password: "hello"}
+	user := &models.UserModel{ID: 2, Username: "hisyam", Password: "hello"}
 
 	assert.Panics(t, func() {
 		tests.UserService.Update(user)
