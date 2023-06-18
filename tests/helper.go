@@ -1,11 +1,23 @@
 package tests
 
 import (
-	"github.com/hisyamsk/url-shortener/config"
-	"github.com/hisyamsk/url-shortener/database"
+	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v2"
+	"github.com/hisyamsk/url-shortener/app/database"
+	"github.com/hisyamsk/url-shortener/app/server"
 	"github.com/hisyamsk/url-shortener/entities"
+	"github.com/hisyamsk/url-shortener/handlers"
 	"github.com/hisyamsk/url-shortener/helpers"
+	"github.com/hisyamsk/url-shortener/middlewares"
+	"github.com/hisyamsk/url-shortener/models"
 	"github.com/hisyamsk/url-shortener/repositories"
+	"github.com/hisyamsk/url-shortener/routes"
 	"github.com/hisyamsk/url-shortener/services"
 	"gorm.io/gorm"
 )
@@ -20,13 +32,30 @@ var UrlRepo repositories.UrlRepository
 var UserService services.UserService
 var UrlService services.UrlService
 
+var AppTest *fiber.App
+
 func TestInit() {
-	config.Init()
 	DB = database.NewDB(database.DBTestName)
+
 	UserRepo = repositories.NewUserRepository(DB)
 	UrlRepo = repositories.NewUrlRepository(DB)
+
 	UserService = services.NewUserService(UserRepo)
 	UrlService = services.NewUrlService(UrlRepo, UserRepo)
+
+	UserHandler := handlers.NewUserHandler(UserService)
+
+	v1Handlers := &handlers.Handlers{
+		UserHandler: UserHandler,
+	}
+	rootHandlers := &handlers.ApiVersionHandlers{
+		V1Handlers: v1Handlers,
+	}
+
+	validator := validator.New()
+	Middlewares := middlewares.NewMiddleware(validator)
+	AppTest = server.NewApp(DB)
+	routes.Router(AppTest, rootHandlers, Middlewares)
 }
 
 func PopulateTables() {
@@ -46,6 +75,21 @@ func PopulateTables() {
 	}
 	err = DB.Create(&Urls).Error
 	helpers.PanicIfError(err)
+}
+
+func GetResponse(method, target string, body any) (*http.Response, *models.WebResponse) {
+	jsonBody, _ := json.Marshal(&body)
+	reqBody := strings.NewReader(string(jsonBody))
+	req := httptest.NewRequest(method, target, reqBody)
+	req.Header.Set("Content-Type", "application/json")
+
+	response, _ := AppTest.Test(req, -1)
+	respBody, _ := io.ReadAll(response.Body)
+	var result *models.WebResponse
+	err := json.Unmarshal(respBody, &result)
+	helpers.PanicIfError(err)
+
+	return response, result
 }
 
 func DeleteRecords() {
