@@ -10,4 +10,5 @@ func V1Router(router fiber.Router, handlers *handlers.Handlers, middlewares midd
 	v1Router := router.Group("/v1")
 
 	userRouter(v1Router, handlers.UserHandler, middlewares)
+	urlRouter(v1Router, handlers.UrlHandler, middlewares)
 }

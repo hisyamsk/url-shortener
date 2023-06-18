@@ -44,9 +44,11 @@ func TestInit() {
 	UrlService = services.NewUrlService(UrlRepo, UserRepo)
 
 	UserHandler := handlers.NewUserHandler(UserService)
+	UrlHandler := handlers.NewUrlHandler(UrlService)
 
 	v1Handlers := &handlers.Handlers{
 		UserHandler: UserHandler,
+		UrlHandler:  UrlHandler,
 	}
 	rootHandlers := &handlers.ApiVersionHandlers{
 		V1Handlers: v1Handlers,
@@ -71,7 +73,7 @@ func PopulateTables() {
 	Urls = []*entities.Url{
 		{Url: "url1", Redirect: "google.com", UserID: Users[0].ID},
 		{Url: "url2", Redirect: "google.com", UserID: Users[0].ID},
-		{Url: "url3", Redirect: "google.com", UserID: Users[1].ID},
+		{Url: "myurl3", Redirect: "google.com", UserID: Users[1].ID},
 	}
 	err = DB.Create(&Urls).Error
 	helpers.PanicIfError(err)

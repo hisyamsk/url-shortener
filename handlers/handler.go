@@ -2,6 +2,7 @@ package handlers
 
 type Handlers struct {
 	UserHandler
+	UrlHandler
 }
 
 type ApiVersionHandlers struct {
@@ -11,5 +12,6 @@ type ApiVersionHandlers struct {
 func NewHandlers(handlers *Handlers) *Handlers {
 	return &Handlers{
 		UserHandler: handlers.UserHandler,
+		UrlHandler:  handlers.UrlHandler,
 	}
 }
