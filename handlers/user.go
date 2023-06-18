@@ -29,11 +29,7 @@ func NewUserHandler(s services.UserService) UserHandler {
 func (handler *userHandler) GetAll(c *fiber.Ctx) error {
 	res := handler.service.FindAll()
 
-	return c.Status(fiber.StatusOK).JSON(&models.WebResponse{
-		Success: true,
-		Error:   nil,
-		Data:    res,
-	})
+	return helpers.SendWebResponseSuccess(c, fiber.StatusOK, res)
 }
 
 func (handler *userHandler) GetById(c *fiber.Ctx) error {
