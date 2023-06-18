@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"github.com/hisyamsk/url-shortener/entities"
+	"github.com/hisyamsk/url-shortener/exception"
 	"github.com/hisyamsk/url-shortener/helpers"
 	"github.com/hisyamsk/url-shortener/models"
 	"github.com/hisyamsk/url-shortener/repositories"
@@ -27,7 +27,7 @@ func NewUserService(repository repositories.UserRepository) UserService {
 
 func (service *userService) FindAll() []*models.UserResponse {
 	usersEntities := service.repository.FindAll()
-	var userResponse []*models.UserResponse
+	userResponse := []*models.UserResponse{}
 
 	for _, val := range usersEntities {
 		userResponse = append(userResponse, helpers.UserEntityToResponse(val))
@@ -35,19 +35,17 @@ func (service *userService) FindAll() []*models.UserResponse {
 
 	return userResponse
 }
+
 func (service *userService) Find(field string, val any) *models.UserResponse {
 	userEntity, err := service.repository.Find(field, val)
-	if err != nil {
-		panic(fiber.NewError(fiber.StatusNotFound, err.Error()))
-	}
+	exception.RaiseIfNotFoundError(err)
 
 	return helpers.UserEntityToResponse(userEntity)
 }
+
 func (service *userService) FindUrlsById(id int) []*models.UrlModel {
 	_, err := service.repository.Find("id", id)
-	if err != nil {
-		panic(fiber.NewError(fiber.StatusNotFound, err.Error()))
-	}
+	exception.RaiseIfNotFoundError(err)
 
 	urls := service.repository.FindUrlsById(id)
 	var urlsResponse []*models.UrlModel
@@ -57,40 +55,36 @@ func (service *userService) FindUrlsById(id int) []*models.UrlModel {
 
 	return urlsResponse
 }
+
 func (service *userService) Create(user *models.UserModel) *models.UserResponse {
 	_, err := service.repository.Find("username", user.Username)
-	if err != nil {
-		hashedPassword := helpers.HashPassword(user.Password)
-		userEntity := &entities.User{Username: user.Username, Password: hashedPassword}
+	exception.RaiseIfDuplicateError(err, "username already exists")
 
-		service.repository.Create(userEntity)
-		return helpers.UserEntityToResponse(userEntity)
-	}
+	hashedPassword := helpers.HashPassword(user.Password)
+	userEntity := &entities.User{Username: user.Username, Password: hashedPassword}
 
-	panic(fiber.NewError(fiber.StatusBadRequest, "username already exists"))
+	service.repository.Create(userEntity)
+	return helpers.UserEntityToResponse(userEntity)
 }
+
 func (service *userService) Update(user *models.UserModel) *models.UserResponse {
 	// check if user exists
 	foundUser, err := service.repository.Find("id", user.ID)
-	if err != nil {
-		panic(fiber.NewError(fiber.StatusNotFound, err.Error()))
-	}
+	exception.RaiseIfNotFoundError(err)
 
 	// check if user updates the username
 	if user.Username != "" && user.Username != foundUser.Username {
 		_, err = service.repository.Find("username", user.Username)
-		if err == nil {
-			panic(fiber.NewError(fiber.StatusBadRequest, "username already exists"))
-		}
+		exception.RaiseIfDuplicateError(err, "username already exists")
+
 		foundUser.Username = user.Username
 	}
 
 	// check if user updates the password
 	if user.Password != "" {
 		err := helpers.ComparePassword(foundUser.Password, user.Password)
-		if err == nil {
-			panic(fiber.NewError(fiber.StatusBadRequest, "new password cannot be the same as the old one"))
-		}
+		exception.RaiseIfDuplicateError(err, "new password cannot be the same as the old one")
+
 		hashedPassword := helpers.HashPassword(user.Password)
 		foundUser.Password = hashedPassword
 	}
@@ -100,9 +94,7 @@ func (service *userService) Update(user *models.UserModel) *models.UserResponse 
 }
 func (service *userService) Delete(id int) {
 	_, err := service.repository.Find("id", id)
-	if err != nil {
-		panic(fiber.NewError(fiber.StatusNotFound, err.Error()))
-	}
+	exception.RaiseIfNotFoundError(err)
 
 	service.repository.DeleteUrlsById(id)
 	service.repository.Delete(id)
