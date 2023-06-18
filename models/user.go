@@ -11,7 +11,12 @@ type UserResponse struct {
 	Username string `json:"username"`
 }
 
-type UserCraeteRequest struct {
+type UserCreateRequest struct {
 	Username string `json:"username" validate:"required,min=5,max=12"`
 	Password string `json:"password" validate:"required,min=6,max=50"`
+}
+
+type UserUpdateRequest struct {
+	Username string `json:"username" validate:"omitempty,min=5,max=12"`
+	Password string `json:"password" validate:"omitempty,min=6,max=50"`
 }

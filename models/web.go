@@ -1,7 +1,7 @@
 package models
 
 type WebResponse struct {
-	Success bool  `json:"success"`
-	Error   error `json:"error"`
-	Data    any   `json:"data"`
+	Success bool `json:"success"`
+	Error   any  `json:"error"`
+	Data    any  `json:"data"`
 }
