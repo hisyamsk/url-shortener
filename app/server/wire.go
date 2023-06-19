@@ -33,6 +33,7 @@ func InitializeServer(dbName string) *fiber.App {
 		validator.New,
 		userSet,
 		urlSet,
+		handlers.NewMainHandler,
 		wire.Struct(new(handlers.V1Handlers), "*"),
 		wire.Struct(new(handlers.ApiVersionHandlers), "*"),
 		middlewares.NewMiddleware,

@@ -22,13 +22,15 @@ import (
 
 func InitializeServer(dbName string) *fiber.App {
 	db := database.NewDB(dbName)
+	urlRepository := repositories.NewUrlRepository(db)
 	userRepository := repositories.NewUserRepository(db)
+	urlService := services.NewUrlService(urlRepository, userRepository)
+	mainHandler := handlers.NewMainHandler(urlService)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
-	urlRepository := repositories.NewUrlRepository(db)
-	urlService := services.NewUrlService(urlRepository, userRepository)
 	urlHandler := handlers.NewUrlHandler(urlService)
 	v1Handlers := &handlers.V1Handlers{
+		MainHandler: mainHandler,
 		UserHandler: userHandler,
 		UrlHandler:  urlHandler,
 	}

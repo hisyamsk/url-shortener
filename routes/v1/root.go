@@ -7,8 +7,9 @@ import (
 )
 
 func V1Router(router fiber.Router, handlers *handlers.V1Handlers, middlewares middlewares.Middleware) {
-	v1Router := router.Group("/v1")
+	router.Get("/:url", handlers.MainHandler.FindUrl)
 
+	v1Router := router.Group("/v1")
 	userRouter(v1Router, handlers.UserHandler, middlewares)
 	urlRouter(v1Router, handlers.UrlHandler, middlewares)
 }

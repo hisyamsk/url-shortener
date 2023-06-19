@@ -45,10 +45,12 @@ func TestInit() {
 
 	UserHandler := handlers.NewUserHandler(UserService)
 	UrlHandler := handlers.NewUrlHandler(UrlService)
+	MainHandler := handlers.NewMainHandler(UrlService)
 
 	v1Handlers := &handlers.V1Handlers{
 		UserHandler: UserHandler,
 		UrlHandler:  UrlHandler,
+		MainHandler: MainHandler,
 	}
 	rootHandlers := &handlers.ApiVersionHandlers{
 		V1Handlers: v1Handlers,
