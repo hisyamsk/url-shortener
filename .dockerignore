@@ -1,0 +1,8 @@
+tmp
+tests
+Dockerfile*
+docker-compose.yml
+init.sql
+.env
+.air*
+.git*

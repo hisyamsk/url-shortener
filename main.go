@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/hisyamsk/url-shortener/app/database"
@@ -11,7 +12,9 @@ import (
 
 func main() {
 	err := godotenv.Load()
-	helpers.PanicIfError(err)
+	if err != nil {
+		fmt.Println("no .env file present")
+	}
 
 	server := server.InitializeServer(database.DBName)
 	err = server.Listen(os.Getenv("APP_PORT"))
