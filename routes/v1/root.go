@@ -6,7 +6,7 @@ import (
 	"github.com/hisyamsk/url-shortener/middlewares"
 )
 
-func V1Router(router fiber.Router, handlers *handlers.Handlers, middlewares middlewares.Middleware) {
+func V1Router(router fiber.Router, handlers *handlers.V1Handlers, middlewares middlewares.Middleware) {
 	v1Router := router.Group("/v1")
 
 	userRouter(v1Router, handlers.UserHandler, middlewares)

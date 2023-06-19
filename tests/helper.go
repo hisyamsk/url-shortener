@@ -9,8 +9,8 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/hisyamsk/url-shortener/app"
 	"github.com/hisyamsk/url-shortener/app/database"
-	"github.com/hisyamsk/url-shortener/app/server"
 	"github.com/hisyamsk/url-shortener/entities"
 	"github.com/hisyamsk/url-shortener/handlers"
 	"github.com/hisyamsk/url-shortener/helpers"
@@ -46,7 +46,7 @@ func TestInit() {
 	UserHandler := handlers.NewUserHandler(UserService)
 	UrlHandler := handlers.NewUrlHandler(UrlService)
 
-	v1Handlers := &handlers.Handlers{
+	v1Handlers := &handlers.V1Handlers{
 		UserHandler: UserHandler,
 		UrlHandler:  UrlHandler,
 	}
@@ -56,7 +56,7 @@ func TestInit() {
 
 	validator := validator.New()
 	Middlewares := middlewares.NewMiddleware(validator)
-	AppTest = server.NewApp(DB)
+	AppTest = app.NewApp(rootHandlers, Middlewares)
 	routes.Router(AppTest, rootHandlers, Middlewares)
 }
 

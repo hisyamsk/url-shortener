@@ -1,17 +1,10 @@
 package handlers
 
-type Handlers struct {
+type V1Handlers struct {
 	UserHandler
 	UrlHandler
 }
 
 type ApiVersionHandlers struct {
-	V1Handlers *Handlers
-}
-
-func NewHandlers(handlers *Handlers) *Handlers {
-	return &Handlers{
-		UserHandler: handlers.UserHandler,
-		UrlHandler:  handlers.UrlHandler,
-	}
+	V1Handlers *V1Handlers
 }

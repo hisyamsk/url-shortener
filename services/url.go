@@ -27,7 +27,7 @@ func NewUrlService(urlRepo repositories.UrlRepository, userRepo repositories.Use
 
 func (service *urlService) FindAll() []*models.UrlModel {
 	urls := service.urlRepo.FindAll()
-	var urlsResponse []*models.UrlModel
+	urlsResponse := []*models.UrlModel{}
 
 	for _, val := range urls {
 		urlsResponse = append(urlsResponse, helpers.UrlEntityToResponse(val))
