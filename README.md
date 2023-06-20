@@ -1,9 +1,11 @@
 # **URL Shortener**
 
 Base URL: `127.0.0.1:8000`
+API Docs (swagger): `127.0.0.1:8000/docs`
 
 | Endpoints            | Method                 |
 | -------------------- | ---------------------- |
+| `/docs`              | `GET`
 | `/v1/users`          | `GET` `POST`           |
 | `/v1/users/:id`      | `GET` `PATCH` `DELETE` |
 | `/v1/users/:id/urls` | `GET`                  |
