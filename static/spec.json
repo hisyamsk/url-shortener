@@ -1,0 +1,807 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "URL Shortener",
+    "description": "URL Shortener built using Go, Fiber, GORM, and PostgreSQL",
+    "version": "1.0"
+  },
+  "servers": [{ "url": "http://localhost:8000/" }],
+  "paths": {
+    "/v1/users": {
+      "get": {
+        "tags": ["V1 API Users"],
+        "summary": "Get all users",
+        "responses": {
+          "200": {
+            "description": "Success get all users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Users"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["V1 API Users"],
+        "description": "Create new user",
+        "summary": "Create new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateUsers"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success create user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Users"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{id}": {
+      "get": {
+        "summary": "Get user by id",
+        "description": "Get user by id",
+        "tags": ["V1 API Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "User Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Users"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user by id",
+        "description": "Update user by user",
+        "tags": ["V1 API Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "User Id"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateUsers"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "succes": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Users"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500":{
+            "description": "Internal Server Error",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete user by id",
+        "description": "Delete user by id",
+        "tags": ["V1 API Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "user Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success delete success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "succes": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "500":{
+            "description": "Internal Server Error",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{id}/urls":{
+      "get": {
+        "summary": "Get user's urls by id",
+        "description": "Get user's urls by id",
+        "tags": ["V1 API Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "User Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get user's urls",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "type": "array",
+                      "items":{
+                        "$ref": "#/components/schemas/Urls"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/urls": {
+      "get": {
+        "tags": ["V1 API Urls"],
+        "summary": "Get all urls",
+        "responses": {
+          "200": {
+            "description": "Success get all urls",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Urls"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["V1 API Urls"],
+        "description": "Create new url",
+        "summary": "Create new url",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateUrls"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success create url",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Urls"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/urls/{id}": {
+      "get": {
+        "summary": "Get url by id",
+        "description": "Get url by id",
+        "tags": ["V1 API Urls"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "Url Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get url",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Urls"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update url by id",
+        "description": "Update url by user",
+        "tags": ["V1 API Urls"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "Url Id"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateUrls"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update url",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "succes": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Urls"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500":{
+            "description": "Internal Server Error",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete url by id",
+        "description": "Delete url by id",
+        "tags": ["V1 API Urls"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "url Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success delete",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "succes": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "data": {
+                      "type": "string",
+                      "example": "delete successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "500":{
+            "description": "Internal Server Error",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "CategoryAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Authentication for Category API"
+      }
+    },
+    "schemas": {
+      "CreateOrUpdateUsers": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrUpdateUrls":{
+        "type": "object",
+        "properties": {
+          "url":{
+            "type": "string",
+            "example": "myCustomUrl"
+          },
+          "redirect":{
+            "type": "string",
+            "example": "https://google.com"
+          },
+          "userId":{
+            "type": "number",
+            "example": 1
+          }
+        }
+      },
+      "Users": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "Urls":{
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "url":{
+            "type": "string",
+            "example": "myCustomUrl"
+          },
+          "redirect":{
+            "type": "string",
+            "example": "https://google.com"
+          }
+        }
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Internal server error"
+          },
+          "data": {
+            "type": "string",
+            "example": null
+          }
+        }
+      },
+      "NotFoundError": {
+        "type": "object",
+        "properties": {
+          "succes": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "record not found"
+          },
+          "data": {
+            "type": "string",
+            "example": null
+          }
+        }
+      },
+      "BadRequestError": {
+        "type": "object",
+        "properties": {
+          "succes": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "array",
+            "example": ["error on field: Password, condition: required"]
+          },
+          "data": {
+            "type": "string",
+            "example": "null"
+          }
+        }
+      }
+    }
+  }
+}
