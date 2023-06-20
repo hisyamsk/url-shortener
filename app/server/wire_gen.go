@@ -30,12 +30,12 @@ func InitializeServer(dbName string) *fiber.App {
 	userHandler := handlers.NewUserHandler(userService)
 	urlHandler := handlers.NewUrlHandler(urlService)
 	v1Handlers := &handlers.V1Handlers{
-		MainHandler: mainHandler,
 		UserHandler: userHandler,
 		UrlHandler:  urlHandler,
 	}
 	apiVersionHandlers := &handlers.ApiVersionHandlers{
-		V1Handlers: v1Handlers,
+		MainHandler: mainHandler,
+		V1Handlers:  v1Handlers,
 	}
 	validate := validator.New()
 	middleware := middlewares.NewMiddleware(validate)

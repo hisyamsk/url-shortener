@@ -50,10 +50,10 @@ func TestInit() {
 	v1Handlers := &handlers.V1Handlers{
 		UserHandler: UserHandler,
 		UrlHandler:  UrlHandler,
-		MainHandler: MainHandler,
 	}
 	rootHandlers := &handlers.ApiVersionHandlers{
-		V1Handlers: v1Handlers,
+		MainHandler: MainHandler,
+		V1Handlers:  v1Handlers,
 	}
 
 	validator := validator.New()
