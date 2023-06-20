@@ -8,8 +8,8 @@ import (
 )
 
 func Router(app *fiber.App, handlers *handlers.ApiVersionHandlers, middlewares middlewares.Middleware) {
-	app.Get("/:url", handlers.MainHandler.FindUrl)
 	app.Static("/docs", "./static")
+	app.Get("/:url", handlers.MainHandler.FindUrl)
 
 	v1.V1Router(app, handlers.V1Handlers, middlewares)
 }
